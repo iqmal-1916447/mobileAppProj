@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import AddSchedule from "./screens/AddSchedule";
 import About from "./screens/About";
 import ShowSchedule from "./screens/ShowSchedule";
+import DetailSchedule from "./modals/DetailSchedule";
 import { NavigationContainer } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -43,13 +44,21 @@ export default function App() {
             }}
           />
           <Drawer.Screen
-            name="About"
+            name="about"
             component={About}
             options={{
               title: "About Us",
               drawerIcon: ({ size }) => {
                 return <Entypo name="code" size={size} color="black" />;
               },
+            }}
+          />
+          <Drawer.Screen
+            name="courseDetails"
+            component={DetailSchedule}
+            options={{
+              title: "Course details",
+              drawerItemStyle: { display: "none" },
             }}
           />
         </Drawer.Navigator>

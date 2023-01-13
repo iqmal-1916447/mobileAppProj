@@ -1,12 +1,13 @@
-import { StyleSheet, View, FlatList, Text } from "react-native";
+import { StyleSheet, View, FlatList, Text, Pressable } from "react-native";
 import { SEMESTERCOURSES } from "../data/dummy-data";
+import DetailSchedule from "../modals/DetailSchedule";
+import { useState } from "react";
 
-const RenderSchedule = ({ day }) => {
+const RenderSchedule = ({ day, style, onPressBtn }) => {
   let chosenDay = SEMESTERCOURSES.filter((passedObj) => {
     if (passedObj.day == day) {
       return passedObj;
     }
-    console.log(passedObj.day);
   });
   return (
     <FlatList
@@ -14,52 +15,91 @@ const RenderSchedule = ({ day }) => {
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => {
         return (
-          <View>
-            <Text>{item.title}</Text>
-            <Text>{item.venue}</Text>
-          </View>
+          <Pressable style={style[0]} onPress={onPressBtn}>
+            <Text style={style[1]}>{item.title}</Text>
+            <Text style={style[1]}>{item.venue}</Text>
+          </Pressable>
         );
       }}
     />
   );
 };
 
-const ShowSchedule = () => {
+const ShowSchedule = ({ navigation }) => {
+  // const [modalIsVisible, setModalIsVisible] = useState(false);
+
+  const DetailScheduleHandler = () => {
+    //   setModalIsVisible(true);
+    //   console.log(modalIsVisible);
+    //   if (modalIsVisible) {
+    // console.log("Im rendering");
+    navigation.navigate("courseDetails");
+    //   }
+  };
+
   return (
     <View style={styles.container}>
-      <View>
-        <Text>Monday</Text>
-        <RenderSchedule day="Monday" />
+      <View style={styles.dayContainer}>
+        <Text style={styles.dayText}>Monday</Text>
+        <RenderSchedule
+          day="Monday"
+          style={[styles.scheduleItemPress, styles.scheduleItemText]}
+          onPressBtn={DetailScheduleHandler}
+        />
       </View>
 
-      <View>
-        <Text>Tuesday</Text>
-        <RenderSchedule day="Tuesday" />
+      <View style={styles.dayContainer}>
+        <Text style={styles.dayText}>Tuesday</Text>
+        <RenderSchedule
+          day="Tuesday"
+          style={[styles.scheduleItemPress, styles.scheduleItemText]}
+          onPressBtn={DetailScheduleHandler}
+        />
       </View>
 
-      <View>
-        <Text>Wednesday</Text>
-        <RenderSchedule day="Wednesday" />
+      <View style={styles.dayContainer}>
+        <Text style={styles.dayText}>Wednesday</Text>
+        <RenderSchedule
+          day="Wednesday"
+          style={[styles.scheduleItemPress, styles.scheduleItemText]}
+          onPressBtn={DetailScheduleHandler}
+        />
       </View>
 
-      <View>
-        <Text>Thursday</Text>
-        <RenderSchedule day="Thursday" />
+      <View style={styles.dayContainer}>
+        <Text style={styles.dayText}>Thursday</Text>
+        <RenderSchedule
+          day="Thursday"
+          style={[styles.scheduleItemPress, styles.scheduleItemText]}
+          onPressBtn={DetailScheduleHandler}
+        />
       </View>
 
-      <View>
-        <Text>Friday</Text>
-        <RenderSchedule day="Friday" />
+      <View style={styles.dayContainer}>
+        <Text style={styles.dayText}>Friday</Text>
+        <RenderSchedule
+          day="Friday"
+          style={[styles.scheduleItemPress, styles.scheduleItemText]}
+          onPressBtn={DetailScheduleHandler}
+        />
       </View>
 
-      <View>
-        <Text>Saturday</Text>
-        <RenderSchedule day="Saturday" />
+      <View style={styles.dayContainer}>
+        <Text style={styles.dayText}>Saturday</Text>
+        <RenderSchedule
+          day="Saturday"
+          style={[styles.scheduleItemPress, styles.scheduleItemText]}
+          onPressBtn={DetailScheduleHandler}
+        />
       </View>
 
-      <View>
-        <Text>Sunday</Text>
-        <RenderSchedule day="Sunday" />
+      <View style={styles.dayContainer}>
+        <Text style={styles.dayText}>Sunday</Text>
+        <RenderSchedule
+          day="Sunday"
+          style={[styles.scheduleItemPress, styles.scheduleItemText]}
+          onPressBtn={DetailScheduleHandler}
+        />
       </View>
     </View>
   );
@@ -73,11 +113,31 @@ const styles = StyleSheet.create({
     backgroundColor: "#d4caed",
   },
 
-  scheduleItemText: {
+  scheduleItemPress: {
     backgroundColor: "#5e0acc",
-    color: "white",
     padding: 8,
     margin: 8,
     borderRadius: 6,
+    elevation: 4,
+  },
+
+  scheduleItemText: {
+    fontSize: 12,
+    lineHeight: 21,
+    fontWeight: "bold",
+    letterSpacing: 0.25,
+    color: "white",
+  },
+
+  dayText: {
+    fontSize: 16,
+    fontWeight: "900",
+  },
+
+  dayContainer: {
+    borderRadius: 3,
+    backgroundColor: "#9dbf86",
+    padding: 10,
+    margin: 10,
   },
 });
