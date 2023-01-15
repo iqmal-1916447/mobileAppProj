@@ -1,6 +1,27 @@
 import { View, Text, Pressable, StyleSheet } from "react-native";
+import { deleteDoc, doc } from "firebase/firestore";
+import { db } from "../config/firebase";
 
-const DetailSchedule = ({ navigation }) => {
+const DeleteSchedule = ({ style, id, navigation }) => {
+  const [forText, forPressable] = style;
+  const deleteCourseHandler = () => {
+    const course = doc(db, "courses", id);
+    deleteDoc(course);
+
+    //after delete must return to mainpage
+    navigation.navigate("showSchedule");
+  };
+  return (
+    <Pressable style={forPressable} onPress={deleteCourseHandler}>
+      <Text style={forText}>Delete Course</Text>
+    </Pressable>
+  );
+};
+
+const DetailSchedule = ({ navigation, route }) => {
+  const { dataFirebase } = route.params;
+  console.log(dataFirebase);
+
   return (
     <View style={styles.container}>
       <View style={styles.courseContainer}>
@@ -8,22 +29,27 @@ const DetailSchedule = ({ navigation }) => {
           <Text></Text>
         </View>
         <View>
-          <Text>Day</Text>
-          <Text>Time</Text>
-          <Text>Code</Text>
-          <Text>Sect</Text>
-          <Text>Venue</Text>
-          <Text>Lecturer</Text>
-          <Text>Chr</Text>
+          <Text>Day: {dataFirebase.day}</Text>
+          <Text>Time: {dataFirebase.time}</Text>
+          <Text>Code: {dataFirebase.code}</Text>
+          <Text>Sect: {dataFirebase.sect}</Text>
+          <Text>Venue: {dataFirebase.venue}</Text>
+          <Text>Lecturer: {dataFirebase.lecturer}</Text>
+          <Text>Chr: {dataFirebase.chr}</Text>
         </View>
         <Pressable
-          style={styles.btn}
+          style={styles.btnExit}
           onPress={() => {
             navigation.goBack();
           }}
         >
           <Text style={styles.btnTxt}>Exit</Text>
         </Pressable>
+        <DeleteSchedule
+          style={[styles.btnTxt, styles.btnDelete]}
+          id={dataFirebase.id}
+          navigation={navigation}
+        />
       </View>
     </View>
   );
@@ -47,7 +73,18 @@ const styles = StyleSheet.create({
     width: "90%",
   },
 
-  btn: {
+  btnExit: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 5,
+    backgroundColor: "black",
+    margin: 5,
+  },
+
+  btnDelete: {
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 12,
@@ -55,6 +92,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     elevation: 5,
     backgroundColor: "red",
+    margin: 5,
   },
 
   btnTxt: {

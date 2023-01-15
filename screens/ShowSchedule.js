@@ -1,40 +1,55 @@
 import { StyleSheet, View, FlatList, Text, Pressable } from "react-native";
 import { SEMESTERCOURSES } from "../data/dummy-data";
 import DetailSchedule from "../modals/DetailSchedule";
-import { useState } from "react";
-
-const RenderSchedule = ({ day, style, onPressBtn }) => {
-  let chosenDay = SEMESTERCOURSES.filter((passedObj) => {
-    if (passedObj.day == day) {
-      return passedObj;
-    }
-  });
-  return (
-    <FlatList
-      data={chosenDay}
-      keyExtractor={(item) => item.id}
-      renderItem={({ item }) => {
-        return (
-          <Pressable style={style[0]} onPress={onPressBtn}>
-            <Text style={style[1]}>{item.title}</Text>
-            <Text style={style[1]}>{item.venue}</Text>
-          </Pressable>
-        );
-      }}
-    />
-  );
-};
+import { useEffect, useState } from "react";
+import { collection, onSnapshot } from "firebase/firestore";
+import { db } from "../config/firebase";
 
 const ShowSchedule = ({ navigation }) => {
-  // const [modalIsVisible, setModalIsVisible] = useState(false);
+  const [course, setCourse] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const DetailScheduleHandler = () => {
-    //   setModalIsVisible(true);
-    //   console.log(modalIsVisible);
-    //   if (modalIsVisible) {
-    // console.log("Im rendering");
-    navigation.navigate("courseDetails");
-    //   }
+  useEffect(() => {
+    setLoading(true);
+    const courseQuery = collection(db, "courses");
+    onSnapshot(courseQuery, (snapshot) => {
+      let courseList = [];
+      snapshot.docs.map((doc) =>
+        courseList.push({ ...doc.data(), id: doc.id })
+      );
+      setCourse(courseList);
+      setLoading(false);
+    });
+  }, []);
+
+  const RenderSchedule = ({ day, style, onPressBtn }) => {
+    console.log(course);
+    let chosenDay = course.filter((passedObj) => {
+      if (passedObj.day == day) {
+        return passedObj;
+      }
+    });
+    return (
+      <FlatList
+        data={chosenDay}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => {
+          return (
+            <Pressable
+              style={style[0]}
+              onPress={() => {
+                navigation.navigate("courseDetails", {
+                  dataFirebase: item,
+                });
+              }}
+            >
+              <Text style={style[1]}>{item.title}</Text>
+              <Text style={style[1]}>{item.venue}</Text>
+            </Pressable>
+          );
+        }}
+      />
+    );
   };
 
   return (
@@ -44,7 +59,6 @@ const ShowSchedule = ({ navigation }) => {
         <RenderSchedule
           day="Monday"
           style={[styles.scheduleItemPress, styles.scheduleItemText]}
-          onPressBtn={DetailScheduleHandler}
         />
       </View>
 
@@ -53,7 +67,6 @@ const ShowSchedule = ({ navigation }) => {
         <RenderSchedule
           day="Tuesday"
           style={[styles.scheduleItemPress, styles.scheduleItemText]}
-          onPressBtn={DetailScheduleHandler}
         />
       </View>
 
@@ -62,7 +75,6 @@ const ShowSchedule = ({ navigation }) => {
         <RenderSchedule
           day="Wednesday"
           style={[styles.scheduleItemPress, styles.scheduleItemText]}
-          onPressBtn={DetailScheduleHandler}
         />
       </View>
 
@@ -71,7 +83,6 @@ const ShowSchedule = ({ navigation }) => {
         <RenderSchedule
           day="Thursday"
           style={[styles.scheduleItemPress, styles.scheduleItemText]}
-          onPressBtn={DetailScheduleHandler}
         />
       </View>
 
@@ -80,7 +91,6 @@ const ShowSchedule = ({ navigation }) => {
         <RenderSchedule
           day="Friday"
           style={[styles.scheduleItemPress, styles.scheduleItemText]}
-          onPressBtn={DetailScheduleHandler}
         />
       </View>
 
@@ -89,7 +99,6 @@ const ShowSchedule = ({ navigation }) => {
         <RenderSchedule
           day="Saturday"
           style={[styles.scheduleItemPress, styles.scheduleItemText]}
-          onPressBtn={DetailScheduleHandler}
         />
       </View>
 
@@ -98,7 +107,6 @@ const ShowSchedule = ({ navigation }) => {
         <RenderSchedule
           day="Sunday"
           style={[styles.scheduleItemPress, styles.scheduleItemText]}
-          onPressBtn={DetailScheduleHandler}
         />
       </View>
     </View>

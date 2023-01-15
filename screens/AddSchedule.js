@@ -1,53 +1,172 @@
-import { Button, StyleSheet, TextInput, View, Text } from "react-native";
-import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
+import { useState } from "react";
+import {
+  Pressable,
+  StyleSheet,
+  TextInput,
+  View,
+  Text,
+  ToastAndroid,
+} from "react-native";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "../config/firebase";
+import SemesterCourse from "../models/SemesterCourse";
 
-const CourseCode = () => {
+const CourseCode = ({ editState }) => {
+  const [courseCode, setCourseCode] = editState;
   return (
-    <TextInput style={[styles.input, { flex: 3 }]} placeholder="Course Code" />
+    <TextInput
+      style={[styles.input, { flex: 3 }]}
+      placeholder="Course Code"
+      value={courseCode}
+      onChangeText={(txt) => {
+        setCourseCode(txt);
+      }}
+    />
   );
 };
 
-const CourseSection = () => {
+const CourseSection = ({ editState }) => {
+  const [courseSection, setCourseSection] = editState;
   return (
     <TextInput
       style={styles.input}
       placeholder="Section"
       keyboardType="number-pad"
+      value={courseSection}
+      onChangeText={(txt) => {
+        setCourseSection(parseInt(txt));
+      }}
     />
   );
 };
 
-const CourseTitle = () => {
-  return <TextInput style={styles.input} placeholder="Course Title" />;
+const CourseTitle = ({ editState }) => {
+  const [courseTitle, setCourseTitle] = editState;
+  return (
+    <TextInput
+      style={styles.input}
+      placeholder="Course Title"
+      value={courseTitle}
+      onChangeText={(txt) => {
+        setCourseTitle(txt);
+      }}
+    />
+  );
 };
 
-const CourseChr = () => {
+const CourseChr = ({ editState }) => {
+  const [courseChr, setCourseChr] = editState;
   return (
     <TextInput
       style={styles.input}
       placeholder="Credit Hour"
       keyboardType="number-pad"
+      value={courseChr}
+      onChangeText={(txt) => {
+        setCourseChr(parseInt(txt));
+      }}
     />
   );
 };
 
-const Day = () => {
-  return <TextInput style={[styles.input, { flex: 2 }]} placeholder="Day" />;
+const Day = ({ editState }) => {
+  const [courseDay, setCourseDay] = editState;
+  return (
+    <TextInput
+      style={[styles.input, { flex: 2 }]}
+      placeholder="Day"
+      value={courseDay}
+      onChangeText={(txt) => {
+        setCourseDay(txt);
+      }}
+    />
+  );
 };
 
-const CourseTime = () => {
-  return <TextInput style={[styles.input, { flex: 2 }]} placeholder="Time" />;
+const CourseTime = ({ editState }) => {
+  const [courseTime, setCourseTime] = editState;
+  return (
+    <TextInput
+      style={[styles.input, { flex: 2 }]}
+      placeholder="Time"
+      value={courseTime}
+      onChangeText={(txt) => {
+        setCourseTime(txt);
+      }}
+    />
+  );
 };
 
-const CourseVenue = () => {
-  return <TextInput style={styles.input} placeholder="Venue" />;
+const CourseVenue = ({ editState }) => {
+  const [courseVenue, setCourseVenue] = editState;
+  return (
+    <TextInput
+      style={styles.input}
+      placeholder="Venue"
+      value={courseVenue}
+      onChangeText={(txt) => {
+        setCourseVenue(txt);
+      }}
+    />
+  );
 };
 
-const CourseLecturer = () => {
-  return <TextInput style={styles.input} placeholder="Lecturer" />;
+const CourseLecturer = ({ editState }) => {
+  const [courseLecturer, setCourseLecturer] = editState;
+  return (
+    <TextInput
+      style={styles.input}
+      placeholder="Lecturer"
+      value={courseLecturer}
+      onChangeText={(txt) => {
+        setCourseLecturer(txt);
+      }}
+    />
+  );
 };
 
-const AddSchedule = () => {
+const AddSchedule = ({ navigation }) => {
+  // const [course, setCourse] = useState([new SemesterCourse()]);
+  const [courseCode, setCourseCode] = useState("");
+  const [courseSection, setCourseSection] = useState(0);
+  const [courseTitle, setCourseTitle] = useState("");
+  const [courseChr, setCourseChr] = useState(0);
+  const [courseDay, setCourseDay] = useState("");
+  const [courseTime, setCourseTime] = useState("");
+  const [courseVenue, setCourseVenue] = useState("");
+  const [courseLecturer, setCourseLecturer] = useState("");
+
+  const addCourse = () => {
+    const courseDb = collection(db, "courses");
+    addDoc(courseDb, {
+      chr: courseChr,
+      code: courseCode,
+      day: courseDay,
+      lecturer: courseLecturer,
+      sect: courseSection,
+      time: courseTime,
+      title: courseTitle,
+      venue: courseVenue,
+    });
+
+    // after add must return to mainpage
+    navigation.navigate("showSchedule");
+
+    // ToastAndroid.showWithGravity(
+    //   "Course successfully saved!",
+    //   ToastAndroid.SHORT
+    // );
+
+    // setCourseCode()
+    // setCourseSection()
+    // setCourseTime()
+    // setCourseChr()
+    // setCourseDay()
+    // setCourseTime()
+    // setCourseVenue()
+    // setCourseLecturer()
+  };
+
   return (
     <View style={styles.container}>
       <View
@@ -57,24 +176,32 @@ const AddSchedule = () => {
           justifyContent: "space-evenly",
         }}
       >
-        <Day />
-        <CourseTime />
-        <CourseCode />
+        <Day editState={[courseDay, setCourseDay]} />
+        <CourseTime editState={[courseTime, setCourseTime]} />
+        <CourseCode editState={[courseCode, setCourseCode]} />
       </View>
 
       <View style={{ flexDirecton: "row", width: "90%" }}>
-        <CourseTitle />
+        <CourseTitle editState={[courseTitle, setCourseTitle]} />
       </View>
 
       <View style={{ flexDirection: "row", width: "90%" }}>
-        <CourseVenue />
+        <CourseVenue editState={[courseVenue, setCourseVenue]} />
       </View>
 
       <View style={{ flexDirection: "row", width: "90%" }}>
-        <CourseLecturer />
+        <CourseLecturer editState={[courseLecturer, setCourseLecturer]} />
       </View>
 
-      <Pressable style={styles.btn}>
+      <View>
+        <CourseSection editState={[courseSection, setCourseSection]} />
+      </View>
+
+      <View>
+        <CourseChr editState={[courseChr, setCourseChr]} />
+      </View>
+
+      <Pressable style={styles.btn} onPress={addCourse}>
         <Text style={styles.btnTxt}>Done</Text>
       </Pressable>
     </View>

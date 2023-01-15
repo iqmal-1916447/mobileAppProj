@@ -1,5 +1,15 @@
 class SemesterCourse {
-  constructor(id, code, sect, title, chr, day, time, venue, lecturer) {
+  constructor(
+    id = null,
+    code = null,
+    sect = null,
+    title = null,
+    chr = null,
+    day = null,
+    time = null,
+    venue = null,
+    lecturer = null
+  ) {
     this.id = id;
     this.code = code;
     this.sect = sect;
